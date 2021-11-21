@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <title>Today Focus</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="top-bar">
+        <div class="search">
+          <i class="material-icons small">search</i>
+          <input class="search__input" type="text" name="search" />
+        </div>
+        <div class="weather">
+          <div class="weather__value">
+            <img
+              class="weather__icon"
+              src="http://openweathermap.org/img/w/10n.png"
+              alt="weather icon"
+            />
+            <span class="weather__temp">18°C</span>
+          </div>
+          <p class="weather__location">Nyeri</p>
+        </div>
+      </div>
+      <div class="focus-container">
+        <div class="focus-container__time">20:30</div>
+        <div class="focus-container__greeting">
+          <span>Good Evening,</span>
+          <input
+            class="focus-container__greeting--input"
+            type="text"
+            value="Anthony"
+            name="userName"
+          />
+        </div>
+        <div class="focus-container__todo">
+          What's your main focus for this evening?
+        </div>
+        <input type="text" class="focus-container__input" name="todo" />
+        <ul>
+          <li>
+            <input type="checkbox" name="activity01" id="activity01" />
+            <span>Clone Momentum</span>
+          </li>
+        </ul>
+      </div>
+      <div class="quote">
+        "Every day is an opportunity to a make a new happy ending."
+      </div>
+    </div>
+    <script src="js/main.js"></script>
+  </body>
+</html>
