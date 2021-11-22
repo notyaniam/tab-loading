@@ -13,47 +13,79 @@
   </head>
   <body>
     <div class="container">
-      <div class="top-bar">
-        <div class="search">
-          <i class="material-icons small">search</i>
-          <input class="search__input" type="text" name="search" />
+      <div class="preloader">
+        <div class="preloader__text">mc</div>
+        <div class="preloader__content">
+          <form id="userDetails">
+            <ul>
+              <li>
+                <label>Name:</label>
+                <input
+                  type="text"
+                  placeholder="Enter your name"
+                  id="userName"
+                />
+              </li>
+              <li>
+                <label>City:</label>
+                <input type="text" placeholder="Enter your city" id="city" />
+              </li>
+              <li>
+                <button type="submit" class="btn">Add</button>
+              </li>
+            </ul>
+          </form>
         </div>
-        <div class="weather">
-          <div class="weather__value">
-            <img
-              class="weather__icon"
-              src="http://openweathermap.org/img/w/10n.png"
-              alt="weather icon"
+      </div>
+      <div class="overlay"></div>
+      <div class="content-container">
+        <div class="top-bar">
+          <div class="search">
+            <i class="material-icons small">search</i>
+            <input
+              class="search__input"
+              type="text"
+              name="search"
+              placeholder="search..."
             />
-            <span class="weather__temp">18°C</span>
           </div>
-          <p class="weather__location">Nyeri</p>
+          <div class="weather">
+            <ul>
+              <li>
+                <div class="weather__value">
+                  <img
+                    class="weather__icon"
+                    src="http://openweathermap.org/img/w/10n.png"
+                    alt="weather icon"
+                  />
+                  <p>
+                    <span class="weather__temp">-</span>
+                    °C
+                  </p>
+                </div>
+              </li>
+            </ul>
+            <p class="weather__location"></p>
+          </div>
         </div>
-      </div>
-      <div class="focus-container">
-        <div class="focus-container__time">20:30</div>
-        <div class="focus-container__greeting">
-          <span>Good Evening,</span>
-          <input
-            class="focus-container__greeting--input"
-            type="text"
-            value="Anthony"
-            name="userName"
-          />
+        <div class="focus-container">
+          <div class="focus-container__time"></div>
+          <div class="focus-container__greeting">
+            Good
+            <span class="focus-container__period title"></span>
+            <span class="focus-container__input"></span>
+          </div>
+          <div class="focus-container__now">
+            What's your main focus for this
+            <span class="focus-container__period"></span>
+          </div>
+          <input type="text" class="focus-container__todo" name="todo" />
+          <ul class="focus-container__activity"></ul>
         </div>
-        <div class="focus-container__todo">
-          What's your main focus for this evening?
+        <div class="quote">
+          <blockquote class="quote__text"></blockquote>
+          <p class="quote__author"></p>
         </div>
-        <input type="text" class="focus-container__input" name="todo" />
-        <ul>
-          <li>
-            <input type="checkbox" name="activity01" id="activity01" />
-            <span>Clone Momentum</span>
-          </li>
-        </ul>
-      </div>
-      <div class="quote">
-        "Every day is an opportunity to a make a new happy ending."
       </div>
     </div>
     <script src="js/main.js"></script>

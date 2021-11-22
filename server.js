@@ -1,11 +1,19 @@
 // create a server for the backend
 const express = require("express");
+const cors = require("cors");
 const colors = require("colors");
 const morgan = require("morgan");
 const env = require("./config/env");
 
 // initialize the express package
 const app = express();
+
+// managing cors
+const corsOptions = {
+  origin: "*",
+};
+
+app.use(cors(corsOptions));
 
 // monitor request made to the server
 if (env.ENV === "development") {

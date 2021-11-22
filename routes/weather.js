@@ -12,7 +12,7 @@ const getNewWeather = async (req, res) => {
     // get api key from the config
     const key = config.get("weatherAPIKey");
     // check if there's a location in request else default
-    const loc = req.loc || "nyeri";
+    const loc = req.query.loc || "nyeri";
     // create api url
     const url = `https://api.openweathermap.org/data/2.5/weather?q=${loc}&units=metric&appid=${key}`;
 
