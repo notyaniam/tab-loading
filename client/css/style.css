@@ -198,6 +198,12 @@ input[type="checkbox"] {
   font-weight: 600;
 }
 
+.weather__location {
+  font-weight: 700;
+  font-size: 1.3em;
+  text-align: center;
+}
+
 .focus-container {
   max-width: 800px;
   height: 70%;
@@ -254,9 +260,14 @@ input[type="checkbox"] {
 
 .focus-container li {
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.1em;
+  margin: 0 auto;
+  padding: 0.2em;
+}
+
+.focus-container li:not(:last-child) {
+  border-bottom: 1px solid #cccccc42;
 }
 
 .focus-container__activity {
@@ -267,11 +278,26 @@ input[type="checkbox"] {
 }
 
 .focus-container__activity label {
+  margin-top: 0.5em;
   margin-bottom: 0.5em;
+  text-align: center;
 }
 
 .focus-container--checked {
   text-decoration: line-through;
+}
+
+.focus-container__trash {
+  cursor: pointer;
+}
+
+.focus-container__trash .material-icons {
+  padding: 0;
+  margin: 0;
+  color: rgb(255, 0, 0);
+  background-color: #cccccc;
+  border-radius: 50%;
+  cursor: pointer;
 }
 
 .quote {

@@ -9,6 +9,7 @@ let taskDetails = localStorage.getItem("taskDetails")
 
 const searchInputElement = document.querySelector(".search__input");
 const weatherElement = document.querySelector(".weather");
+const weatherLocationElement = document.querySelector(".weather__location");
 const focusInputElement = document.querySelector(".focus-container__input");
 const todoInputElement = document.querySelector(".focus-container__todo");
 const activityElement = document.querySelector(".focus-container__activity");
@@ -70,44 +71,71 @@ searchInputElement.addEventListener("keydown", (e) => {
   }
 });
 
+const detailsElements = [focusInputElement, weatherLocationElement];
+
 // listen to double click on the focus input and add role
-focusInputElement.addEventListener("dblclick", () => {
-  focusInputElement.setAttribute("role", "textbox");
-  focusInputElement.setAttribute("contenteditable", true);
-});
+detailsElements.forEach((element) => {
+  // enabling editing on the elements
+  element.addEventListener("dblclick", () => {
+    element.setAttribute("role", "textbox");
+    element.setAttribute("contenteditable", true);
 
-focusInputElement.addEventListener("focusout", () => {
-  if (focusInputElement.textContent === "") {
-    // reset to default name if no name detected
-    focusInputElement.textContent = userDetails.name;
-  }
-  // remove editability
-  ["role", "contenteditable"].forEach((action) =>
-    focusInputElement.removeAttribute(action)
-  );
-});
+    // move the cursor to the end of the element
+    setCursorToEnd(element);
+  });
 
-// listen to enter on the focus input element
-focusInputElement.addEventListener("keydown", (e) => {
-  if (e.keyCode === 13) {
-    e.preventDefault();
-    // update the local storage with new name
-    let name = e.target.textContent;
-    if (name) {
-      name = `${name.charAt(0).toUpperCase()}${name.substring(1)}`;
-      // console.log(name);
-      userDetails.name = name;
-      localStorage.setItem("userDetails", JSON.stringify(userDetails));
-    } else {
-      // reset to default name if no name detected
-      focusInputElement.textContent = userDetails.name;
-    }
-
+  // disabling edit on the elements
+  element.addEventListener("focusout", () => {
     // remove editability
     ["role", "contenteditable"].forEach((action) =>
-      focusInputElement.removeAttribute(action)
+      element.removeAttribute(action)
     );
-  }
+
+    // reset to default name if no name detected
+    if (element.textContent === "") {
+      if (element.querySelector(".weather__location")) {
+        element.textContent = userDetails.city;
+      } else {
+        element.textContent = userDetails.name;
+      }
+    }
+  });
+
+  // updating the localstorage with the new details
+  // listen to enter on the focus input element
+  element.addEventListener("keydown", (e) => {
+    if (e.keyCode === 13) {
+      e.preventDefault();
+      let elClasses = [...element.classList];
+      // update the local storage with new name
+      let newText = e.target.textContent;
+
+      if (newText) {
+        newText = `${newText.charAt(0).toUpperCase()}${newText.substring(1)}`;
+        console.log(elClasses.includes("weather__location"));
+        // console.log(name);
+        if (elClasses.includes("weather__location")) {
+          userDetails.city = newText;
+          fetchWeather(newText);
+        } else {
+          userDetails.name = newText;
+        }
+        localStorage.setItem("userDetails", JSON.stringify(userDetails));
+      } else {
+        // reset to default name if no name detected
+        if (elClasses.includes("weather__location")) {
+          element.textContent = userDetails.city;
+        } else {
+          element.textContent = userDetails.name;
+        }
+      }
+
+      // remove editability
+      ["role", "contenteditable"].forEach((action) =>
+        element.removeAttribute(action)
+      );
+    }
+  });
 });
 
 // event listener to new tasks addition
@@ -118,11 +146,11 @@ todoInputElement.addEventListener("keydown", (e) => {
 
     // check if there's any content
     if (e.target.value !== "") {
-      // get all current li tags
+      const elementId = Math.ceil(Math.random() * 10000).toString();
+      // get all current li elements
 
-      const count = activityElement.children.length;
       const task = e.target.value.replace(/\s+/g, " ").trim();
-      const content = { elementId: `activity${count + 1}`, task };
+      const content = { elementId: `tsk-${elementId}`, task };
 
       // add the content to the ul
       updateActivityContainer(content);
@@ -159,7 +187,11 @@ function updateActivityContainer(content, action = 0) {
     <label for=${elementId} class="checkmark">
         <input type="checkbox"class='activity-input' name=${elementId} id=${elementId} />
         <span>${task}</span>
-    </label>`;
+    </label>
+    <a href="#" class='focus-container__trash ${elementId}'>
+      <i class="material-icons small">remove_circle_outline</i>
+    </a>
+    `;
 
   // add the element to the ul parent
   activityElement.prepend(newActivityElement);
@@ -178,6 +210,7 @@ function updateTotalListeners() {
     // add individual task listeners by refiltering with their new ids
     let checkmarkElement = el.querySelector(".activity-input");
     checkmarkElement = document.getElementById(checkmarkElement.id);
+    const deleteTagElement = document.querySelector(`.${checkmarkElement.id}`);
 
     // initialize element listener
     checkmarkElement.addEventListener("change", (e) => {
@@ -200,6 +233,18 @@ function updateTotalListeners() {
         localStorage.setItem("taskDetails", JSON.stringify(taskDetails));
         // remove the strike through class from the element
         el.classList.remove("focus-container--checked");
+      }
+    });
+
+    // monitor delete requests from the item
+    deleteTagElement.addEventListener("click", () => {
+      // get element id from the class list
+      const m = [...deleteTagElement.classList].filter((cl) =>
+        cl.includes("tsk")
+      );
+      // evaluate if class exists and remove
+      if (m.length) {
+        activityCRUD("del", { elementId: m[0] });
       }
     });
   });
@@ -239,6 +284,21 @@ function activityCRUD(action, content = null) {
     localStorage.setItem("taskDetails", JSON.stringify(taskDetails));
     return;
   }
+
+  // handle delete request
+  if (action === "del") {
+    // get element id from the content object
+    const { elementId } = content;
+    // get parent li and remove
+    document
+      .getElementById(elementId)
+      .closest(".checkmark")
+      .parentElement.remove();
+    // remove from the local storage
+    taskDetails = taskDetails.filter((item) => item.elementId !== elementId);
+    localStorage.setItem("taskDetails", JSON.stringify(taskDetails));
+    return;
+  }
 }
 
 // function to add user data to local storage
@@ -264,6 +324,23 @@ function getUserData() {
       location.reload();
     }
   });
+}
+
+// move the cursor to end on content editable section
+function setCursorToEnd(element) {
+  // selecting the element through doc range
+  const range = document.createRange();
+  // selecting entire contents within the range of the element
+  range.selectNodeContents(element);
+  // collapse range to end point [false means to the end of the content]
+  range.collapse(false);
+
+  // get the selection and make changes
+  const selection = window.getSelection();
+  // removing any selection made
+  selection.removeAllRanges();
+  // making the selected range visible
+  selection.addRange(range);
 }
 
 // function to get weather
