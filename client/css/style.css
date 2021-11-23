@@ -259,6 +259,13 @@ input[type="checkbox"] {
   margin-bottom: 0.1em;
 }
 
+.focus-container__activity {
+  width: 80%;
+  max-width: 800px;
+  max-height: 50%;
+  overflow: auto;
+}
+
 .focus-container__activity label {
   margin-bottom: 0.5em;
 }

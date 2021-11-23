@@ -3,6 +3,10 @@ let userDetails = localStorage.getItem("userDetails")
   ? JSON.parse(localStorage.getItem("userDetails"))
   : null;
 
+let taskDetails = localStorage.getItem("taskDetails")
+  ? JSON.parse(localStorage.getItem("taskDetails"))
+  : [];
+
 const searchInputElement = document.querySelector(".search__input");
 const weatherElement = document.querySelector(".weather");
 const focusInputElement = document.querySelector(".focus-container__input");
@@ -12,6 +16,16 @@ const quoteElement = document.querySelector(".quote");
 const quoteTextElement = document.querySelector(".quote__text");
 const quoteAuthorElement = document.querySelector(".quote__author");
 const contentElement = document.querySelector(".preloader__content");
+
+// update time
+setInterval(() => {
+  let now = new Date();
+  now = now.toLocaleTimeString().substring(0, 5);
+  document.querySelector(".focus-container__time").textContent = now;
+  document.querySelectorAll(".focus-container__period").forEach((el) => {
+    el.textContent = getPeriod(now);
+  });
+}, 1000);
 
 // display preloader before site fully loads
 document.addEventListener("DOMContentLoaded", () => {
@@ -36,6 +50,23 @@ document.addEventListener("DOMContentLoaded", () => {
     window.addEventListener("load", () => {
       document.querySelector(".preloader").remove();
     });
+
+    // update existing tasks from local storage
+    if (taskDetails.length) {
+      // load the tasks from the local storage
+      activityCRUD("read");
+      // map all input elements to change listener
+      updateTotalListeners();
+    }
+  }
+});
+
+// monitor search input and redirect to google on enter
+searchInputElement.addEventListener("keydown", (e) => {
+  // check if keycode is enter and prevent enter default
+  if (e.keyCode === 13) {
+    e.preventDefault();
+    searchRequest(e.target.value);
   }
 });
 
@@ -79,6 +110,7 @@ focusInputElement.addEventListener("keydown", (e) => {
   }
 });
 
+// event listener to new tasks addition
 todoInputElement.addEventListener("keydown", (e) => {
   // check if the key pressed is enter and prevent default
   if (e.keyCode === 13) {
@@ -89,43 +121,124 @@ todoInputElement.addEventListener("keydown", (e) => {
       // get all current li tags
 
       const count = activityElement.children.length;
+      const task = e.target.value.replace(/\s+/g, " ").trim();
+      const content = { elementId: `activity${count + 1}`, task };
 
-      // create a new li element
-      const newActivityElement = document.createElement("li");
-      newActivityElement.classList.add("focus-container__activity");
-      newActivityElement.innerHTML = `
-        <label for=activity${count + 1} class="checkmark">
-            <input type="checkbox"class='activity-input' name=activity${
-              count + 1
-            } id=activity${count + 1} />
-            <span>${e.target.value}</span>
-        </label>`;
-      // add the element to the ul parent
-      activityElement.appendChild(newActivityElement);
+      // add the content to the ul
+      updateActivityContainer(content);
     }
+
     // reset the input element
     todoInputElement.value = "";
     // remove focus from the element
     todoInputElement.blur();
     // update listeners
-    updateActivityListener();
+    updateTotalListeners();
   }
 });
 
+// event listener to show the author on mouse over
+quoteElement.addEventListener("mouseover", () => {
+  quoteAuthorElement.style.transform = "translateY(0)";
+  quoteAuthorElement.style.opacity = "1";
+});
+
+// event listener to hide author on mouse out
+quoteElement.addEventListener("mouseout", () => {
+  quoteAuthorElement.style.transform = "translateY(-40%)";
+  quoteAuthorElement.style.opacity = "0";
+});
+
+// function to add new element into the ul
+function updateActivityContainer(content, action = 0) {
+  const { elementId, task } = content;
+  // create a new li element
+  const newActivityElement = document.createElement("li");
+  newActivityElement.classList.add("focus-container__activity");
+  newActivityElement.innerHTML = `
+    <label for=${elementId} class="checkmark">
+        <input type="checkbox"class='activity-input' name=${elementId} id=${elementId} />
+        <span>${task}</span>
+    </label>`;
+
+  // add the element to the ul parent
+  activityElement.prepend(newActivityElement);
+
+  if (action) return;
+
+  // add the item to local storage
+  activityCRUD("add", content);
+  return;
+}
+
 // update the listeners on new activities
-function updateActivityListener() {
+function updateTotalListeners() {
+  // reload all tasks
   document.querySelectorAll(".checkmark").forEach((el) => {
+    // add individual task listeners by refiltering with their new ids
     let checkmarkElement = el.querySelector(".activity-input");
     checkmarkElement = document.getElementById(checkmarkElement.id);
 
+    // initialize element listener
     checkmarkElement.addEventListener("change", (e) => {
+      // monitor change in the element and update local storage
+      const { id } = checkmarkElement;
       if (checkmarkElement.checked) {
+        // update local storage item status
+        taskDetails = taskDetails.map((task) =>
+          task.elementId === id ? { ...task, status: true } : task
+        );
+        console.log(taskDetails);
+        localStorage.setItem("taskDetails", JSON.stringify(taskDetails));
+        // update the task with strike through class
         el.classList.add("focus-container--checked");
       } else {
+        // update local storage item status
+        taskDetails = taskDetails.map((task) =>
+          task.elementId === id ? { ...task, status: false } : task
+        );
+        localStorage.setItem("taskDetails", JSON.stringify(taskDetails));
+        // remove the strike through class from the element
         el.classList.remove("focus-container--checked");
       }
     });
   });
+}
+
+// function to manage activities local storage CRUD
+function activityCRUD(action, content = null) {
+  // initialize task details array contains content
+  taskDetails = taskDetails ? taskDetails : [];
+  if (action === "read") {
+    // if there are no tasks return
+    if (!taskDetails.length) return;
+
+    // loop through the tasks and add to the container
+    taskDetails.forEach((task) => {
+      updateActivityContainer(task, 1);
+      // select the element and update checked status
+      if (task.status) {
+        const inputElement = document.getElementById(task.elementId);
+        inputElement.checked = true;
+        // add strike through class to the label element
+        inputElement
+          .closest(".checkmark")
+          .classList.add("focus-container--checked");
+      }
+    });
+  }
+
+  // evaluate what action is being requested
+  if (action === "add") {
+    // get the content from the item passed
+    const { elementId, task } = content;
+    // create the new object for the local storage
+    const newActivity = { elementId, task, status: false, date: new Date() };
+    // add the object to the task details and save to local storage
+    taskDetails.push(newActivity);
+    localStorage.setItem("taskDetails", JSON.stringify(taskDetails));
+    return;
+  }
 }
 
 // function to add user data to local storage
@@ -152,27 +265,6 @@ function getUserData() {
     }
   });
 }
-
-// monitor search input and redirect to google on enter
-searchInputElement.addEventListener("keydown", (e) => {
-  // check if keycode is enter and prevent enter default
-  if (e.keyCode === 13) {
-    e.preventDefault();
-    searchRequest(e.target.value);
-  }
-});
-
-// get current weather and update
-
-// update time
-setInterval(() => {
-  let now = new Date();
-  now = now.toLocaleTimeString().substring(0, 5);
-  document.querySelector(".focus-container__time").textContent = now;
-  document.querySelectorAll(".focus-container__period").forEach((el) => {
-    el.textContent = getPeriod(now);
-  });
-}, 1000);
 
 // function to get weather
 function fetchWeather(city) {
@@ -246,15 +338,6 @@ function getPeriod(time) {
 
 // function to redirect to google search
 function searchRequest(request) {
-  window.location.href = `https://www.google.com/search?q=${request}`;
+  const refinedRequest = request.replace(/\s+/g, " ").trim().replace(" ", "+");
+  window.location.href = `https://www.google.com/search?q=${refinedRequest}`;
 }
-
-quoteElement.addEventListener("mouseover", () => {
-  quoteAuthorElement.style.transform = "translateY(0)";
-  quoteAuthorElement.style.opacity = "1";
-});
-
-quoteElement.addEventListener("mouseout", () => {
-  quoteAuthorElement.style.transform = "translateY(-40%)";
-  quoteAuthorElement.style.opacity = "0";
-});
