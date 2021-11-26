@@ -9,12 +9,12 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="css/style.css" />
-    <title>Today Focus</title>
+    <title>My Focus</title>
   </head>
   <body>
     <div class="container">
       <div class="preloader">
-        <div class="preloader__text">mc</div>
+        <div class="preloader__text">mf</div>
         <div class="preloader__content">
           <form id="userDetails">
             <ul>
@@ -65,7 +65,10 @@
                 </div>
               </li>
             </ul>
-            <p class="weather__location"></p>
+            <p
+              class="weather__location"
+              title="Double click to change city"
+            ></p>
           </div>
         </div>
         <div class="focus-container">
@@ -73,7 +76,10 @@
           <div class="focus-container__greeting">
             Good
             <span class="focus-container__period title"></span>
-            <span class="focus-container__input"></span>
+            <span
+              class="focus-container__input"
+              title="Double click to change Name"
+            ></span>
           </div>
           <div class="focus-container__now">
             What's your main focus for this
@@ -82,9 +88,11 @@
           <input type="text" class="focus-container__todo" name="todo" />
           <ul class="focus-container__activity"></ul>
         </div>
-        <div class="quote">
-          <blockquote class="quote__text"></blockquote>
-          <p class="quote__author"></p>
+        <div class="quote-container">
+          <div class="quote">
+            <blockquote class="quote__text"></blockquote>
+            <p class="quote__author"></p>
+          </div>
         </div>
       </div>
     </div>

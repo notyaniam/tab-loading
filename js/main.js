@@ -21,7 +21,7 @@ const contentElement = document.querySelector(".preloader__content");
 // update time
 setInterval(() => {
   let now = new Date();
-  now = now.toLocaleTimeString().substring(0, 5);
+  now = new Date(now).toLocaleTimeString("en-GB").substring(0, 5);
   document.querySelector(".focus-container__time").textContent = now;
   document.querySelectorAll(".focus-container__period").forEach((el) => {
     el.textContent = getPeriod(now);
@@ -181,12 +181,11 @@ quoteElement.addEventListener("mouseout", () => {
 // function to add new element into the ul
 function updateActivityContainer(content, action = 0) {
   const { elementId, task, date } = content;
-  console.log(date);
   const previousDate = !date ? new Date() : new Date(date);
-  console.log(previousDate);
   const now = new Date();
   let taskAge = (now - previousDate) / (1000 * 60 * 60 * 24);
   taskAge = Math.floor(taskAge);
+
   // create a new li element
   const newActivityElement = document.createElement("li");
   newActivityElement.classList.add("focus-container__activity");
@@ -203,17 +202,18 @@ function updateActivityContainer(content, action = 0) {
 
   // add the element to the ul parent
   activityElement.prepend(newActivityElement);
-
   if (action) return;
 
   // add the item to local storage
   activityCRUD("add", content);
+
   return;
 }
 
 // update the listeners on new activities
 function updateTotalListeners() {
   // reload all tasks
+  console.log(document.querySelectorAll(".checkmark"));
   document.querySelectorAll(".checkmark").forEach((el) => {
     // add individual task listeners by refiltering with their new ids
     let checkmarkElement = el.querySelector(".activity-input");
@@ -245,16 +245,20 @@ function updateTotalListeners() {
     });
 
     // monitor delete requests from the item
-    deleteTagElement.addEventListener("click", () => {
-      // get element id from the class list
-      const m = [...deleteTagElement.classList].filter((cl) =>
-        cl.includes("tsk")
-      );
-      // evaluate if class exists and remove
-      if (m.length) {
-        activityCRUD("del", { elementId: m[0] });
-      }
-    });
+    // tag the element with an attribute and add event if missing
+    if (deleteTagElement.getAttribute("listener") !== "true") {
+      deleteTagElement.setAttribute("listener", "true");
+      deleteTagElement.addEventListener("click", () => {
+        // get element id from the class list
+        const m = [...deleteTagElement.classList].filter((cl) =>
+          cl.includes("tsk")
+        );
+        // evaluate if class exists and remove
+        if (m.length) {
+          activityCRUD("del", { elementId: m[0] });
+        }
+      });
+    }
   });
 }
 
@@ -298,13 +302,14 @@ function activityCRUD(action, content = null) {
     // get element id from the content object
     const { elementId } = content;
     // get parent li and remove
-    document
-      .getElementById(elementId)
-      .closest(".checkmark")
-      .parentElement.remove();
+    console.log(elementId);
+    const label = document.getElementById(elementId).parentElement;
+
+    label.parentElement.remove();
     // remove from the local storage
     taskDetails = taskDetails.filter((item) => item.elementId !== elementId);
     localStorage.setItem("taskDetails", JSON.stringify(taskDetails));
+
     return;
   }
 }
@@ -384,7 +389,7 @@ function updateWeather(response) {
   const { icon, description } = response.weather[0];
   const loc = response.name;
 
-  weatherElement.title = description;
+  weatherElement.querySelector(".weather__value").title = description;
   weatherElement.querySelector(".weather__temp").textContent = temp;
   const iconElement = weatherElement.querySelector(".weather__icon");
   iconElement.src = `http://openweathermap.org/img/w/${icon}.png`;
