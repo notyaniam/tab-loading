@@ -180,7 +180,13 @@ quoteElement.addEventListener("mouseout", () => {
 
 // function to add new element into the ul
 function updateActivityContainer(content, action = 0) {
-  const { elementId, task } = content;
+  const { elementId, task, date } = content;
+  console.log(date);
+  const previousDate = !date ? new Date() : new Date(date);
+  console.log(previousDate);
+  const now = new Date();
+  let taskAge = (now - previousDate) / (1000 * 60 * 60 * 24);
+  taskAge = Math.floor(taskAge);
   // create a new li element
   const newActivityElement = document.createElement("li");
   newActivityElement.classList.add("focus-container__activity");
@@ -189,6 +195,7 @@ function updateActivityContainer(content, action = 0) {
         <input type="checkbox"class='activity-input' name=${elementId} id=${elementId} />
         <span>${task}</span>
     </label>
+    <span>Age: ${taskAge} ${taskAge === 1 ? "day" : "days"}</span>
     <a href="#" class='focus-container__trash ${elementId}'>
       <i class="material-icons small">remove_circle_outline</i>
     </a>

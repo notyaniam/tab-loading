@@ -271,7 +271,7 @@ input[type="checkbox"] {
 }
 
 .focus-container__activity {
-  width: 80%;
+  width: 90%;
   max-width: 800px;
   max-height: 50%;
   overflow: auto;
@@ -280,7 +280,14 @@ input[type="checkbox"] {
 .focus-container__activity label {
   margin-top: 0.5em;
   margin-bottom: 0.5em;
-  text-align: center;
+  text-align: left;
+  /* background-color: aqua; */
+  flex-grow: 1;
+}
+
+.focus-container__activity span {
+  font-size: 0.8em;
+  padding: 0 0.3em;
 }
 
 .focus-container--checked {
