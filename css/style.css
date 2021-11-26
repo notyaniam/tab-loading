@@ -171,6 +171,11 @@ input[type="checkbox"] {
   padding: 0.2em;
 }
 
+.search__input::placeholder {
+  color: #cccccc;
+  opacity: 0.8;
+}
+
 .material-icons {
   margin-right: 0.3em;
   cursor: default;
