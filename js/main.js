@@ -73,6 +73,7 @@ searchInputElement.addEventListener("keydown", (e) => {
 
 const detailsElements = [focusInputElement, weatherLocationElement];
 
+// MANAGING THE USER DETAILS ELEMENTS
 // listen to double click on the focus input and add role
 detailsElements.forEach((element) => {
   // enabling editing on the elements
@@ -355,27 +356,18 @@ function fetchWeather(city) {
     }
   };
 
-  const url = `http://localhost:5000/api/weather?loc=${city}`;
+  const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=806c1bffaa77dd82ca890c74f316c86b`;
   xhr.open("get", url, true);
   xhr.send();
 }
 
 // function to get random quote
-function fetchRandomQuote() {
-  const xhr = new XMLHttpRequest();
-  xhr.responseType = "json";
-  xhr.onreadystatechange = function () {
-    if (xhr.readyState === 4) {
-      if (xhr.status === 200) {
-        // console.log(xhr.response);
-        updateQuote(xhr.response);
-      }
-    }
-  };
-
-  const url = "http://localhost:5000/api/quote";
-  xhr.open("get", url, true);
-  xhr.send();
+async function fetchRandomQuote() {
+  const url = "https://api.quotable.io/random";
+  const response = await fetch(url);
+  const data = await response.json();
+  // console.log(data);
+  updateQuote(data);
 }
 
 // function to load weather into the dom
@@ -394,8 +386,8 @@ function updateWeather(response) {
 }
 
 // function to update the quote and author
-function updateQuote(response) {
-  const { q: quote, a: author } = response[0];
+function updateQuote(data) {
+  const { content: quote, author: author } = data;
   quoteTextElement.textContent = quote;
   quoteAuthorElement.textContent = author;
 }
