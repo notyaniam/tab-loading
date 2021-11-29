@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Lato&family=Montserrat&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@200;400;600;700&family=Montserrat&display=swap");
 
 * {
   margin: 0;
@@ -319,6 +319,8 @@ input[type="checkbox"] {
 
 .focus-container--checked {
   text-decoration: line-through;
+  /* font-size: 0.8em; */
+  font-weight: 200;
 }
 
 .focus-container__trash {

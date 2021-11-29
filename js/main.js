@@ -235,7 +235,7 @@ function updateTotalListeners() {
         taskDetails = taskDetails.map((task) =>
           task.elementId === id ? { ...task, status: true } : task
         );
-        console.log(taskDetails);
+        // console.log(taskDetails);
         localStorage.setItem("taskDetails", JSON.stringify(taskDetails));
         // update the task with strike through class
         el.classList.add("focus-container--checked");
