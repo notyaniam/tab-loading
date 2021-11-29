@@ -319,7 +319,7 @@ input[type="checkbox"] {
 
 .focus-container--checked {
   text-decoration: line-through;
-  /* font-size: 0.8em; */
+  color: rgb(255, 129, 129);
   font-weight: 200;
 }
 
