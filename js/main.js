@@ -47,6 +47,12 @@ document.addEventListener("DOMContentLoaded", () => {
     focusInputElement.textContent = name;
     searchInputElement.value = "";
     fetchWeather(city);
+
+    // update weather periodically
+    setInterval(() => {
+      fetchWeather(city);
+    }, 1000 * 60 * 30);
+
     fetchRandomQuote();
     window.addEventListener("load", () => {
       document.querySelector(".preloader").remove();
