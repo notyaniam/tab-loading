@@ -444,4 +444,5 @@ function getPeriod(time) {
 function searchRequest(request) {
   const refinedRequest = request.replace(/\s+/g, " ").trim().replace(" ", "+");
   window.open(`https://www.google.com/search?q=${refinedRequest}`, "_blank");
+  searchInputElement.value = "";
 }
