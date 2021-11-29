@@ -219,7 +219,7 @@ function updateActivityContainer(content, action = 0) {
 // update the listeners on new activities
 function updateTotalListeners() {
   // reload all tasks
-  console.log(document.querySelectorAll(".checkmark"));
+  // console.log(document.querySelectorAll(".checkmark"));
   document.querySelectorAll(".checkmark").forEach((el) => {
     // add individual task listeners by refiltering with their new ids
     let checkmarkElement = el.querySelector(".activity-input");
@@ -289,6 +289,12 @@ function activityCRUD(action, content = null) {
           .classList.add("focus-container--checked");
       }
     });
+    // // check for scroll bar
+    // if (activityElement.scrollHeight > activityElement.clientHeight) {
+    //   console.log("scrollbar detected");
+    // } else {
+    //   console.log("no scrollbar");
+    // }
   }
 
   // evaluate what action is being requested
@@ -300,6 +306,12 @@ function activityCRUD(action, content = null) {
     // add the object to the task details and save to local storage
     taskDetails.push(newActivity);
     localStorage.setItem("taskDetails", JSON.stringify(taskDetails));
+    // // check for scroll bar
+    // if (activityElement.scrollHeight > activityElement.clientHeight) {
+    //   console.log("scrollbar detected");
+    // } else {
+    //   console.log("no scrollbar");
+    // }
     return;
   }
 
@@ -315,7 +327,12 @@ function activityCRUD(action, content = null) {
     // remove from the local storage
     taskDetails = taskDetails.filter((item) => item.elementId !== elementId);
     localStorage.setItem("taskDetails", JSON.stringify(taskDetails));
-
+    // // check for scrollbar
+    // if (activityElement.scrollHeight > activityElement.clientHeight) {
+    //   console.log("scrollbar detected");
+    // } else {
+    //   console.log("no scrollbar");
+    // }
     return;
   }
 }
@@ -426,5 +443,5 @@ function getPeriod(time) {
 // function to redirect to google search
 function searchRequest(request) {
   const refinedRequest = request.replace(/\s+/g, " ").trim().replace(" ", "+");
-  window.location.href = `https://www.google.com/search?q=${refinedRequest}`;
+  window.open(`https://www.google.com/search?q=${refinedRequest}`, "_blank");
 }
