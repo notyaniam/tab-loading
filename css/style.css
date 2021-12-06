@@ -275,10 +275,17 @@ input[type="checkbox"] {
   text-transform: none;
   border: 1px solid #fff;
   transition: background-color 0.3s ease-in-out;
+  position: relative;
 }
 
 .focus-container__buttons .btn:hover {
   background-color: rgb(0, 170, 170);
+}
+
+.focus-container__buttons .btn::after {
+  content: attr(data-finished);
+  position: absolute;
+  right: 1.5em;
 }
 
 .focus-container__buttons .btn:disabled {

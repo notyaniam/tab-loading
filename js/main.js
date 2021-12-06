@@ -431,9 +431,11 @@ function enableClearBtn() {
 
   // evaluating if the counter changed
   if (finishedCount) {
+    finishBtnElement.dataset.finished = `(${finishedCount})`;
     finishBtnElement.disabled = false;
   } else {
     finishBtnElement.disabled = true;
+    finishBtnElement.dataset.finished = "";
   }
 }
 
