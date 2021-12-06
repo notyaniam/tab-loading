@@ -72,21 +72,44 @@
           </div>
         </div>
         <div class="focus-container">
-          <div class="focus-container__time"></div>
-          <div class="focus-container__greeting">
-            Good
-            <span class="focus-container__period title"></span>
-            <span
-              class="focus-container__input"
-              title="Double click to change Name"
-            ></span>
+          <div class="focus-container__launch">
+            <div class="focus-container__time"></div>
+            <div class="focus-container__greeting">
+              Good
+              <span class="focus-container__period title"></span>
+              <span
+                class="focus-container__input"
+                title="Double click to change Name"
+              ></span>
+            </div>
+            <div>
+              <small id="screen-viewer"></small>
+            </div>
           </div>
-          <div class="focus-container__now">
-            What's your main focus for this
-            <span class="focus-container__period"></span>
+          <div class="focus-container__buttons">
+            <button type="button" class="btn btn-block clear-btn">
+              Clear Finished
+            </button>
           </div>
-          <input type="text" class="focus-container__todo" name="todo" />
-          <ul class="focus-container__activity"></ul>
+          <ul class="focus-container__tasks">
+            <li>
+              <div class="focus-container__now">
+                For your consideration this
+                <span class="focus-container__period"></span>
+              </div>
+            </li>
+            <li>
+              <input
+                type="text"
+                class="focus-container__todo"
+                name="todo"
+                placeholder="add new focus..."
+              />
+            </li>
+            <li class="activity">
+              <ul class="focus-container__activity"></ul>
+            </li>
+          </ul>
         </div>
         <div class="quote-container">
           <div class="quote">

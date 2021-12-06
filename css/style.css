@@ -44,7 +44,7 @@ input:focus {
 }
 
 input[type="checkbox"] {
-  margin: 0 0.8em;
+  margin-left: 1.5em;
   scale: 1.4;
 }
 
@@ -56,7 +56,7 @@ input[type="checkbox"] {
   background-position: center center;
   background-size: cover;
   position: relative;
-  /* overflow: hidden; */
+  overflow: hidden;
   color: #fff;
   z-index: 0;
 }
@@ -229,27 +229,87 @@ input[type="checkbox"] {
 }
 
 .focus-container {
-  max-width: 800px;
-  height: 70%;
+  min-height: 70vh;
+  max-height: 70vh;
+  max-width: 1200px;
   margin: 1rem auto;
-  padding: 0 1em;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  cursor: default;
-  /* background-color: rgba(0, 255, 255, 0.342); */
+  display: grid;
+  gap: 1rem;
+  grid-template-areas: "clock tasks tasks" "buttons tasks tasks";
+  /* background-color: aqua; */
 }
 
-.focus-container__time {
+.focus-container__launch {
+  grid-area: clock;
+  display: flex;
+  flex-direction: column;
   font-size: 8rem;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  /* background-color: beige; */
+}
+
+.focus-container__viewport {
+  font-size: 0.9rem;
+  background-color: #efefef;
+  padding: 0.4rem;
+  border-radius: 25px;
+  color: teal;
+}
+
+.focus-container__buttons {
+  grid-area: buttons;
+  display: flex;
+  max-height: 4rem;
+  margin: 0 0.8em;
+  justify-content: center;
+  align-items: center;
+}
+
+.focus-container__buttons .btn {
+  background-color: teal;
+  border-radius: 25px;
+  margin-bottom: 0.3em;
+  font-family: "Lato", sans-serif;
+  text-transform: none;
+  border: 1px solid #fff;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.focus-container__buttons .btn:hover {
+  background-color: rgb(0, 170, 170);
+}
+
+.focus-container__buttons .btn:disabled {
+  background-color: #727272;
+  color: #cccccc;
+  cursor: not-allowed;
+}
+
+.focus-container__tasks {
+  grid-area: tasks;
+  width: 90%;
+  /* background-color: cadetblue; */
+  display: flex;
+  flex-direction: column;
+  padding: 0 1em;
+  max-height: inherit;
+}
+
+.focus-container__tasks .activity {
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .focus-container__greeting {
+  grid-area: greeting;
+  text-align: center;
   font-size: 2rem;
-  font-weight: 500;
+  font-weight: 700;
   margin-bottom: 0.4em;
+  /* background-color: chartreuse; */
 }
 
 .focus-container__input::after {
@@ -257,7 +317,7 @@ input[type="checkbox"] {
 }
 
 .focus-container__period::after {
-  content: "?";
+  content: ":";
 }
 
 .title {
@@ -272,32 +332,32 @@ input[type="checkbox"] {
   font-size: 1.3em;
   font-weight: 600;
   margin-bottom: 0.5em;
+  text-align: center;
 }
 
 .focus-container input[type="text"] {
   font-size: 1.3em;
   border-bottom: 1px solid #cccccc;
-  width: 80%;
-  padding: 0.2em 0.8em;
+  padding: 0.2em 0;
   text-align: center;
+  display: block;
+  width: 100%;
   margin-bottom: 1em;
+}
+
+.focus-container__activity {
+  width: 100%;
 }
 
 .focus-container__activity li {
   display: flex;
+  width: 95%;
   justify-content: space-between;
   align-items: center;
-  margin: 0.2em auto;
-  padding: 0 0.9em;
+  margin-bottom: 0.2em;
   background-color: #525252ba;
   border-radius: 25px;
   border-bottom: 1px solid #cccccc99;
-}
-
-.focus-container__activity {
-  width: 90%;
-  max-width: 800px;
-  overflow: auto;
 }
 
 .focus-container__activity label {
@@ -326,7 +386,7 @@ input[type="checkbox"] {
 
 .focus-container__trash .material-icons {
   padding: 0;
-  margin: 0;
+  margin-right: 0.5em;
   color: rgb(255, 0, 0);
   background-color: #cccccc;
   border-radius: 50%;
@@ -376,4 +436,25 @@ input[type="checkbox"] {
   transform: translateY(-40%);
   opacity: 0;
   transition: all 0.5s ease-in-out;
+}
+
+/* SMALL MEDIA SCREENS */
+@media screen and (max-width: 930px) {
+  .focus-container {
+    grid-template-areas: "clock clock" "tasks tasks" "buttons buttons";
+    gap: 0.5rem;
+  }
+
+  .focus-container__buttons {
+    width: 90%;
+    /* margin-top: 0.8em; */
+  }
+
+  .focus-container__tasks .activity {
+    height: 25vh;
+  }
+
+  .quote-container {
+    visibility: hidden;
+  }
 }

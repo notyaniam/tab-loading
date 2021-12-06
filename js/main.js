@@ -3,16 +3,18 @@ let userDetails = localStorage.getItem("userDetails")
   ? JSON.parse(localStorage.getItem("userDetails"))
   : null;
 
-let taskDetails = localStorage.getItem("taskDetails")
-  ? JSON.parse(localStorage.getItem("taskDetails"))
-  : [];
+let taskDetails;
+
+taskDetailsLoader();
 
 const searchInputElement = document.querySelector(".search__input");
 const weatherElement = document.querySelector(".weather");
 const weatherLocationElement = document.querySelector(".weather__location");
 const focusInputElement = document.querySelector(".focus-container__input");
+const finishBtnElement = document.querySelector(".clear-btn");
 const todoInputElement = document.querySelector(".focus-container__todo");
 const activityElement = document.querySelector(".focus-container__activity");
+const quoteContainerElement = document.querySelector(".quote-container");
 const quoteElement = document.querySelector(".quote");
 const quoteTextElement = document.querySelector(".quote__text");
 const quoteAuthorElement = document.querySelector(".quote__author");
@@ -65,6 +67,9 @@ document.addEventListener("DOMContentLoaded", () => {
       // map all input elements to change listener
       updateTotalListeners();
     }
+    // manage the clear finished button status
+    enableClearBtn();
+    requestWideScreen();
   }
 });
 
@@ -172,6 +177,9 @@ todoInputElement.addEventListener("keydown", (e) => {
   }
 });
 
+// monitor screen size and display text as needed
+window.addEventListener("resize", requestWideScreen);
+
 // event listener to show the author on mouse over
 quoteElement.addEventListener("mouseover", () => {
   quoteAuthorElement.style.transform = "translateY(0)";
@@ -183,6 +191,17 @@ quoteElement.addEventListener("mouseout", () => {
   quoteAuthorElement.style.transform = "translateY(-40%)";
   quoteAuthorElement.style.opacity = "0";
 });
+
+finishBtnElement.addEventListener("click", () => {
+  deleteFinishedTasks();
+});
+
+// task details loader
+function taskDetailsLoader() {
+  taskDetails = localStorage.getItem("taskDetails")
+    ? JSON.parse(localStorage.getItem("taskDetails"))
+    : [];
+}
 
 // function to add new element into the ul
 function updateActivityContainer(content, action = 0) {
@@ -248,6 +267,7 @@ function updateTotalListeners() {
         // remove the strike through class from the element
         el.classList.remove("focus-container--checked");
       }
+      enableClearBtn();
     });
 
     // monitor delete requests from the item
@@ -277,7 +297,14 @@ function activityCRUD(action, content = null) {
     if (!taskDetails.length) return;
 
     // loop through the tasks and add to the container
+    taskDetails.sort((a, b) => a.status < b.status);
     taskDetails.forEach((task) => {
+      // check if the item is soft deleted
+      if (task.status && task.trash) {
+        return;
+      }
+
+      // update the task container
       updateActivityContainer(task, 1);
       // select the element and update checked status
       if (task.status) {
@@ -289,12 +316,6 @@ function activityCRUD(action, content = null) {
           .classList.add("focus-container--checked");
       }
     });
-    // // check for scroll bar
-    // if (activityElement.scrollHeight > activityElement.clientHeight) {
-    //   console.log("scrollbar detected");
-    // } else {
-    //   console.log("no scrollbar");
-    // }
   }
 
   // evaluate what action is being requested
@@ -306,12 +327,6 @@ function activityCRUD(action, content = null) {
     // add the object to the task details and save to local storage
     taskDetails.push(newActivity);
     localStorage.setItem("taskDetails", JSON.stringify(taskDetails));
-    // // check for scroll bar
-    // if (activityElement.scrollHeight > activityElement.clientHeight) {
-    //   console.log("scrollbar detected");
-    // } else {
-    //   console.log("no scrollbar");
-    // }
     return;
   }
 
@@ -327,12 +342,6 @@ function activityCRUD(action, content = null) {
     // remove from the local storage
     taskDetails = taskDetails.filter((item) => item.elementId !== elementId);
     localStorage.setItem("taskDetails", JSON.stringify(taskDetails));
-    // // check for scrollbar
-    // if (activityElement.scrollHeight > activityElement.clientHeight) {
-    //   console.log("scrollbar detected");
-    // } else {
-    //   console.log("no scrollbar");
-    // }
     return;
   }
 }
@@ -377,6 +386,81 @@ function setCursorToEnd(element) {
   selection.removeAllRanges();
   // making the selected range visible
   selection.addRange(range);
+}
+
+// function to add text requesting wider screen viewer
+function requestWideScreen() {
+  // get the notice element from the DOM
+  const viewPortElement = document.getElementById("screen-viewer");
+  // get quote container CSS styles
+  const styles = window.getComputedStyle(quoteContainerElement);
+  // get status of the visibility for the container
+  const visibleStatus = styles.getPropertyValue("visibility");
+  // get parent element for the notice
+  const viewPortParent = viewPortElement.parentElement;
+
+  // evaluate the status of the quote container visibility
+  if (visibleStatus === "hidden") {
+    // add notice to the DOM
+    viewPortElement.innerHTML =
+      "Consider viewing on a larger screen or maximum window";
+    viewPortParent.classList.add("focus-container__viewport");
+  } else {
+    // remove notice from the DOM
+    viewPortElement.innerHTML = "";
+    // loop through in case the DOM loaded in small screen
+    viewPortParent.classList.forEach((el) =>
+      viewPortParent.classList.remove(el)
+    );
+  }
+}
+
+// function to enable or disable the finished button
+function enableClearBtn() {
+  // initializing the status counter
+  let finishedCount = 0;
+  // reloading the task details from the local storage
+  taskDetailsLoader();
+  // evaluating if task details has content
+  if (taskDetails.length) {
+    // looping through the array checking for status
+    taskDetails.forEach(
+      (item) => item.status && !item.trash && finishedCount++
+    );
+  }
+
+  // evaluating if the counter changed
+  if (finishedCount) {
+    finishBtnElement.disabled = false;
+  } else {
+    finishBtnElement.disabled = true;
+  }
+}
+
+// manage button click on the clear finished button
+function deleteFinishedTasks() {
+  let updatedTaskDetails;
+  // soft delete tasks
+  updatedTaskDetails = taskDetails.map((task) => {
+    // check the status and append the trash to object
+    if (task.status) {
+      task.trash = true;
+      return task;
+    }
+    // ignore if not for delete
+    return task;
+  });
+
+  // save to the local storage
+  localStorage.setItem("taskDetails", JSON.stringify(updatedTaskDetails));
+  // clear the to do list UL
+  activityElement.innerHTML = "";
+  // read from the local storage content just saved
+  activityCRUD("read");
+  // re-populate listeners
+  updateTotalListeners();
+  // recheck the status of the clear button to disable it
+  enableClearBtn();
 }
 
 // function to get weather
