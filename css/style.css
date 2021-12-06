@@ -352,6 +352,11 @@ input[type="checkbox"] {
   margin-bottom: 1em;
 }
 
+.focus-container input[name="todo"]::placeholder {
+  color: #fff;
+  background-color: #525252;
+}
+
 .focus-container__activity {
   width: 100%;
 }
