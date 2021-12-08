@@ -384,7 +384,7 @@ input[type="checkbox"] {
 }
 
 .focus-container__activity span {
-  font-size: 0.8em;
+  font-size: 1rem;
   padding: 0 1em;
 }
 
@@ -405,6 +405,7 @@ input[type="checkbox"] {
   background-color: #cccccc;
   border-radius: 50%;
   cursor: pointer;
+  font-size: 1em;
 }
 
 .quote-container {
