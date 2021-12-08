@@ -4,6 +4,7 @@ let userDetails = localStorage.getItem("userDetails")
   : null;
 
 let taskDetails;
+let image;
 
 taskDetailsLoader();
 
@@ -56,9 +57,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 1000 * 60 * 30);
 
     fetchRandomQuote();
-    window.addEventListener("load", () => {
-      document.querySelector(".preloader").remove();
-    });
+    // setting background image for the application
+    backgroundImage()
+      .then((image) => {
+        console.log(image);
+        document.querySelector(
+          ".container"
+        ).style.backgroundImage = `url(${image})`;
+      })
+      .catch((err) => console.log(err))
+      .finally((finish) => {
+        document.querySelector(".preloader").remove();
+      });
 
     // update existing tasks from local storage
     if (taskDetails.length) {
