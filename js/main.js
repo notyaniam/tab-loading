@@ -60,7 +60,6 @@ document.addEventListener("DOMContentLoaded", () => {
     // setting background image for the application
     backgroundImage()
       .then((image) => {
-        console.log(image);
         document.querySelector(
           ".container"
         ).style.backgroundImage = `url(${image})`;
