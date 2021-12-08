@@ -455,7 +455,7 @@ function deleteFinishedTasks() {
 
   // save to the local storage
   localStorage.setItem("taskDetails", JSON.stringify(updatedTaskDetails));
-  // clear the to do list UL
+  // clear the to-do list UL
   activityElement.innerHTML = "";
   // read from the local storage content just saved
   activityCRUD("read");
@@ -470,10 +470,8 @@ function fetchWeather(city) {
   const xhr = new XMLHttpRequest();
   xhr.responseType = "json";
   xhr.onreadystatechange = function () {
-    if (xhr.readyState === 4) {
-      if (xhr.status === 200) {
-        updateWeather(xhr.response);
-      }
+    if (xhr.readyState === 4 && xhr.status === 200) {
+      updateWeather(xhr.response);
     }
   };
 
@@ -508,7 +506,7 @@ function updateWeather(response) {
 
 // function to update the quote and author
 function updateQuote(data) {
-  const { content: quote, author: author } = data;
+  const { content: quote, author } = data;
   quoteTextElement.textContent = quote;
   quoteAuthorElement.textContent = author;
 }
