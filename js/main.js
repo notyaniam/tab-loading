@@ -4,7 +4,6 @@ let userDetails = localStorage.getItem("userDetails")
   : null;
 
 let taskDetails;
-let image;
 
 taskDetailsLoader();
 
@@ -501,10 +500,38 @@ async function fetchRandomQuote() {
 // function to load weather into the dom
 function updateWeather(response) {
   // update the temperature, icon, location
-  const temp = response.main.temp;
-  const { icon, description } = response.weather[0];
-  const loc = response.name;
+  let temp, icon, description, loc;
+  temp = response.main.temp;
+  ({ icon, description } = response.weather[0]);
+  loc = response.name;
 
+  // if there's new data update local storage
+  if (temp) {
+    localStorage.setItem(
+      "weatherData",
+      JSON.stringify({
+        temp,
+        icon,
+        loc,
+        description,
+      })
+    );
+  }
+
+  // check if there was a valid response
+  if (!temp) {
+    loc = userDetails.city;
+    // get data from the local storage if exists
+    const weatherData = localStorage.getItem("weatherData")
+      ? JSON.parse(localStorage.getItem("weatherData"))
+      : null;
+    // check if the local storage contains data
+    if (weatherData) {
+      ({ temp, icon, loc, description } = weatherData);
+    }
+  }
+
+  // load data to the DOM
   weatherElement.querySelector(".weather__value").title = description;
   weatherElement.querySelector(".weather__temp").textContent = temp;
   const iconElement = weatherElement.querySelector(".weather__icon");
@@ -515,6 +542,16 @@ function updateWeather(response) {
 
 // function to update the quote and author
 function updateQuote(data) {
+  // check if there's data and save to the local storage
+  if (data) localStorage.setItem("quoteData", JSON.stringify(data));
+  if (!data) {
+    data = localStorage.getItem("quoteData")
+      ? JSON.parse(localStorage.getItem("quoteData"))
+      : null;
+  }
+  // if there's no data anywhere return
+  if (data === null) return;
+  // load data to the DOM
   const { content: quote, author } = data;
   quoteTextElement.textContent = quote;
   quoteAuthorElement.textContent = author;

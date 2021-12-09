@@ -2,9 +2,6 @@ let bgImage;
 
 function backgroundImage() {
   return new Promise((resolve, reject) => {
-    // check if there is internet connection
-    let onlineStatus = navigator.onLine;
-
     // loading image from unsplash url
     const loadImage = async () => {
       const url = "https://source.unsplash.com/1600x900/?nature";
@@ -12,14 +9,17 @@ function backgroundImage() {
       const imageBlob = await res.blob();
       const imageUrl = await imageConverter(imageBlob);
       localStorage.setItem("backgroundImage", JSON.stringify(imageUrl));
-      setBackgroundImage();
+      loadBackgroundImage();
       return bgImage;
     };
+
+    // check if there is internet connection
+    const onlineStatus = navigator.onLine;
 
     if (onlineStatus) {
       resolve(loadImage());
     } else {
-      setBackgroundImage();
+      loadBackgroundImage();
       resolve(bgImage);
     }
   });
@@ -46,7 +46,7 @@ function imageConverter(image) {
 }
 
 // setting background image to the canvas
-function setBackgroundImage() {
+function loadBackgroundImage() {
   // get background image from the local storage if exists
   bgImage = localStorage.getItem("backgroundImage")
     ? JSON.parse(localStorage.getItem("backgroundImage"))

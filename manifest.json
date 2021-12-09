@@ -1,18 +1,19 @@
 {
   "name": "My Daily Organizer",
-  "short_name": "My Daily Organizer",
+  "short_name": "myFocus",
+  "description": "Manage your day free of adverts and hassle with encouraging quotes and lovely backgrounds",
   "start_url": ".",
   "background_color": "#5b6065",
   "theme_color": "#008080",
   "display": "minimal-ui",
   "icons": [
     {
-      "src": "images/logo192.png",
+      "src": "images/mf_logo192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "images/logo512.png",
+      "src": "images/mf_logo512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
