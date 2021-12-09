@@ -3,6 +3,7 @@
   "short_name": "myFocus",
   "description": "Manage your day free of adverts and hassle with encouraging quotes and lovely backgrounds",
   "start_url": ".",
+  "id": "/",
   "background_color": "#5b6065",
   "theme_color": "#008080",
   "display": "minimal-ui",
