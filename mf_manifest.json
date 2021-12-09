@@ -6,7 +6,7 @@
   "id": "/",
   "background_color": "#5b6065",
   "theme_color": "#008080",
-  "display": "minimal-ui",
+  "display": "standalone",
   "icons": [
     {
       "src": "images/mf_logo192.png",
